@@ -15,6 +15,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
+        self.count = 0
 
 
     def _hash(self, key):
@@ -51,7 +52,19 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # pass
+        # new_item = LinkedPair(key, value)
+        hashed_key = self._hash_mod(key)
+        if self.storage[hashed_key] is None:
+            self.storage[hashed_key] = LinkedPair(key, value)
+        else:
+            slot = self.storage[hashed_key]
+            while slot and slot.key != key:
+                prev, slot = slot, slot.next
+            if slot:
+                slot.value = value
+            else:
+                prev.next = LinkedPair(key, value)
 
 
 
@@ -74,7 +87,15 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # pass
+        hashed_key = self._hash_mod(key)
+        if self.storage[hashed_key] is None:
+            return None
+        else:
+            slot = self.storage[hashed_key]
+            while slot and slot.key != key:
+                slot = slot.next
+                return slot.value
 
 
     def resize(self):
