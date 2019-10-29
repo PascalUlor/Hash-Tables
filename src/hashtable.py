@@ -56,15 +56,21 @@ class HashTable:
         # new_item = LinkedPair(key, value)
         hashed_key = self._hash_mod(key)
         if self.storage[hashed_key] is None:
+            print("Adding new bucket with key " + key)
             self.storage[hashed_key] = LinkedPair(key, value)
         else:
             slot = self.storage[hashed_key]
-            while slot and slot.key != key:
-                prev, slot = slot, slot.next
-            if slot:
-                slot.value = value
-            else:
-                prev.next = LinkedPair(key, value)
+            head = slot
+            while slot is not None:
+                if slot.key == key :
+                    print("Overwriting key " + key)
+                    slot.value = value
+                    return
+                slot = slot.next
+            print("Adding new key to bucket " + key)
+            new_slot = LinkedPair(key, value)
+            self.storage[hashed_key] = new_slot
+            new_slot.next = head
 
 
 
@@ -93,9 +99,12 @@ class HashTable:
             return None
         else:
             slot = self.storage[hashed_key]
-            while slot and slot.key != key:
+            while slot is not None:
+                if slot.key == key:
+                    return slot.value
                 slot = slot.next
-                return slot.value
+                # return slot.value
+            return None
 
 
     def resize(self):
