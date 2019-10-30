@@ -15,6 +15,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
+        self.count = 0
 
 
     def _hash(self, key):
@@ -51,7 +52,25 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # pass
+        # new_item = LinkedPair(key, value)
+        hashed_key = self._hash_mod(key)
+        if self.storage[hashed_key] is None:
+            # print("Adding new bucket with key " + key)
+            self.storage[hashed_key] = LinkedPair(key, value)
+        else:
+            slot = self.storage[hashed_key]
+            head = slot
+            while slot is not None:
+                if slot.key == key :
+                    # print("Overwriting key " + key)
+                    slot.value = value
+                    return
+                slot = slot.next
+            # print("Adding new key to bucket " + key)
+            new_slot = LinkedPair(key, value)
+            self.storage[hashed_key] = new_slot
+            new_slot.next = head
 
 
 
@@ -63,7 +82,12 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # pass
+        hashed_key = self._hash_mod(key)
+        if self.storage[hashed_key] is None:
+            print('Key does not exist')
+        else:
+            self.storage[hashed_key] = None
 
 
     def retrieve(self, key):
@@ -74,7 +98,18 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # pass
+        hashed_key = self._hash_mod(key)
+        if self.storage[hashed_key] is None:
+            return None
+        else:
+            slot = self.storage[hashed_key]
+            while slot is not None:
+                if slot.key == key:
+                    return slot.value
+                slot = slot.next
+                # return slot.value
+            return None
 
 
     def resize(self):
@@ -84,7 +119,16 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # pass
+        self.capacity *= 2
+        prev_storage = self.storage
+        self.storage = [None] * self.capacity
+        for node in prev_storage:
+            if node is not None:
+                current_node = node
+                while current_node:
+                    self.insert(current_node.key, current_node.value)
+                    current_node = current_node.next
 
 
 
